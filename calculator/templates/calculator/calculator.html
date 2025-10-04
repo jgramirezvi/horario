@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; background-color: #f9f9f9; }
+        .calculator { max-width: 400px; margin: 2em auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 1em; }
+        label { display: block; margin-bottom: 0.5em; font-weight: bold; }
+        input, select, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; font-size: 1.1em; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 1.5em; padding: 1em; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; text-align: center; font-size: 1.2em; }
+        .error { margin-top: 1.5em; padding: 1em; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; border-radius: 4px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>{{ title }}</h1>
+
+        <form method="post" id="calc-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="number1">Número 1:</label>
+                <input type="text" id="number1" name="number1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="operation">Operación:</label>
+                <select id="operation" name="operation">
+                    <option value="add">Suma (+)</option>
+                    <option value="subtract">Resta (-)</option>
+                    <option value="multiply">Multiplicación (*)</option>
+                    <option value="divide">División (/)</option>
+                    <option value="square">Cuadrado (x²)</option>
+                    <option value="sqrt">Raíz Cuadrada (√)</option>
+                    <option value="log">Logaritmo Natural (ln)</option>
+                    <option value="log10">Logaritmo Vulgar (log)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="num2-group">
+                <label for="number2">Número 2:</label>
+                <input type="text" id="number2" name="number2">
+            </div>
+
+            <button type="submit">Calcular</button>
+        </form>
+
+        {% if result is not None %}
+            <div class="result">
+                <strong>Resultado: {{ result|floatformat:4 }}</strong>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const operationSelect = document.getElementById('operation');
+            const num2Group = document.getElementById('num2-group');
+            const num2Input = document.getElementById('number2');
+
+            function toggleNum2() {
+                const selectedOp = operationSelect.value;
+                const unaryOps = ['square', 'sqrt', 'log', 'log10'];
+                if (unaryOps.includes(selectedOp)) {
+                    num2Group.style.display = 'none';
+                    num2Input.required = false;
+                } else {
+                    num2Group.style.display = 'block';
+                    num2Input.required = true;
+                }
+            }
+
+            operationSelect.addEventListener('change', toggleNum2);
+            toggleNum2(); // Llama a la función al cargar la página
+        });
+    </script>
+
+</body>
+</html>
