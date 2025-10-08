@@ -8,66 +8,64 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 import io
 
+def _get_log_data(limit=10):
+    """Función auxiliar para generar los datos de la tabla de logaritmos."""
+    results = []
+    for i in range(limit + 1):
+        if i > 0:
+            log_value = log(i)
+            results.append({'number': i, 'log': f"{log_value:.4f}"})
+        else:
+            # El logaritmo de 0 es indefinido (tiende a -infinito)
+            results.append({'number': i, 'log': "-inf"})
+    return results
+
 def calculator_view(request):
     context = {'title': 'Calculadora'}
     
     if request.method == 'POST':
         try:
             num1 = float(request.POST.get('number1'))
+            num2_str = request.POST.get('number2')
             operation = request.POST.get('operation')
-            num2 = request.POST.get('number2') # Puede ser None
 
             result = None
+            
+            # Definimos las operaciones en un diccionario para un código más limpio
+            binary_operations = {
+                'add': lambda a, b: a + b,
+                'subtract': lambda a, b: a - b,
+                'multiply': lambda a, b: a * b,
+                'divide': lambda a, b: a / b if b != 0 else "Error: No se puede dividir por cero."
+            }
+            unary_operations = {
+                'square': lambda a: a ** 2,
+                'sqrt': lambda a: sqrt(a) if a >= 0 else "Error: No se puede calcular la raíz cuadrada de un número negativo.",
+                'log': lambda a: log(a) if a > 0 else "Error: El logaritmo natural solo está definido para números positivos.",
+                'log10': lambda a: log10(a) if a > 0 else "Error: El logaritmo vulgar solo está definido para números positivos."
+            }
 
-            if operation == 'add':
-                result = num1 + float(num2)
-            elif operation == 'subtract':
-                result = num1 - float(num2)
-            elif operation == 'multiply':
-                result = num1 * float(num2)
-            elif operation == 'divide':
-                if float(num2) == 0:
-                    context['error'] = "Error: No se puede dividir por cero."
-                else:
-                    result = num1 / float(num2)
-            elif operation == 'square':
-                result = num1 ** 2
-            elif operation == 'sqrt':
-                if num1 < 0:
-                    context['error'] = "Error: No se puede calcular la raíz cuadrada de un número negativo."
-                else:
-                    result = sqrt(num1)
-            elif operation == 'log': # Logaritmo natural
-                if num1 <= 0:
-                    context['error'] = "Error: El logaritmo natural solo está definido para números positivos."
-                else:
-                    result = log(num1)
-            elif operation == 'log10': # Logaritmo vulgar (base 10)
-                if num1 <= 0:
-                    context['error'] = "Error: El logaritmo vulgar solo está definido para números positivos."
-                else:
-                    result = log10(num1)
-            context['result'] = result
+            if operation in binary_operations:
+                num2 = float(num2_str)
+                result = binary_operations[operation](num1, num2)
+            elif operation in unary_operations:
+                result = unary_operations[operation](num1)
+
+            # Manejamos los errores que devuelven las funciones lambda
+            if isinstance(result, str):
+                context['error'] = result
+                context['result'] = None
+            else:
+                context['result'] = result
+
         except (ValueError, TypeError):
             context['error'] = "Error: Por favor, introduce números válidos."
 
     return render(request, 'calculator/calculator.html', context)
     
 def show_log_table(request):
-    a = 10
-    results = []
-    for i in range(a + 1):
-        # Evitamos el log(0) que causa un error matemático
-        if i > 0:
-            log_value = log(i)
-        else:
-            # El logaritmo de 0 es indefinido (tiende a -infinito)
-            log_value = "-inf"
-        
-        results.append({'number': i, 'log': log_value})
-
     context = {
-        'data': results,
+        'data': _get_log_data(),
         'title': 'Tabla de Logaritmos'
     }
     return render(request, 'calculator/log_table.html', context)
@@ -85,15 +83,7 @@ def generate_log_pdf(request):
     textob.setFont("Helvetica", 14)
 
     # Lógica para obtener los datos (similar a show_log_table)
-    a = 10
-    results = []
-    for i in range(a + 1):
-        if i > 0:
-            log_value = f"{log(i):.4f}"
-        else:
-            log_value = "-inf"
-        results.append({'number': i, 'log': log_value})
-
+    results = _get_log_data()
     # Añade el contenido al PDF
     textob.textLine("Tabla de Logaritmos")
     textob.setFont("Helvetica", 12)
