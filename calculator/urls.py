@@ -8,4 +8,6 @@ urlpatterns = [
     path('log-table/', views.show_log_table, name='log_table'),
     # Nueva ruta para generar el PDF de la tabla de logaritmos
     path('log-table/pdf/', views.generate_log_pdf, name='log_table_pdf'),
+    # Nueva ruta para limpiar el historial
+    path('clear-history/', views.clear_history, name='clear_history'),
 ]

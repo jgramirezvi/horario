@@ -3,88 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>{{ title }}</title> 
     <style>
-        body { font-family: sans-serif; margin: 2em; background-color: #f9f9f9; }
-        .calculator { max-width: 400px; margin: 2em auto; padding: 2em; border: 1px solid #ccc; border-radius: 8px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        :root {
+            --calc-bg: #333;
+            --display-bg: #dcdcdc;
+            --display-text: #333;
+            --key-bg: #555;
+            --key-hover-bg: #666;
+            --operator-bg: #f39c12;
+            --operator-hover-bg: #e67e22;
+            --equal-bg: #2ecc71;
+            --equal-hover-bg: #27ae60;
+            --function-bg: #777;
+            --function-hover-bg: #888;
+            --clear-btn-bg: #dc3545;
+            --clear-btn-hover-bg: #c82333;
+            --toggle-btn-bg: #6c757d;
+            --toggle-btn-hover-bg: #5a6268;
+        }
+
+        body { font-family: sans-serif; margin: 2em; background-color: #999999; }
+        .main-wrapper { position: relative; }
+        .general-container { width: 95%; margin: 0 auto; background-color: #ffffff; padding: 1em; border-radius: 8px; }
+        .calculator-container { display: flex; justify-content: center; gap: 2em; background-color:"0A0A0A" ;}
+        .calculator { max-width: 320px; margin: 2em auto; padding: 1.5em; border: 1px solid #ccc; border-radius: 8px; background-color: var(--calc-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         h1 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 1em; }
-        label { display: block; margin-bottom: 0.5em; font-weight: bold; }
-        input, select, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; font-size: 1.1em; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .result { margin-top: 1.5em; padding: 1em; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; text-align: center; font-size: 1.2em; }
+        #display { width: 100%; padding: 15px; margin-bottom: 1em; font-size: 2em; text-align: right; background-color: var(--display-bg); border: 2px solid #444; border-radius: 4px; box-sizing: border-box; color: var(--display-text); }
+        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .keypad button { padding: 20px; font-size: 1.2em; border: none; border-radius: 4px; cursor: pointer; background-color: var(--key-bg); color: white; }
+        .keypad button:hover { background-color: var(--key-hover-bg); }
+        .keypad button.operator { background-color: var(--operator-bg); }
+        .keypad button.operator:hover { background-color: var(--operator-hover-bg); }
+        .keypad button.equal { background-color: var(--equal-bg); grid-column: span 2; }
+        .keypad button.equal:hover { background-color: var(--equal-hover-bg); }
+        .keypad button.function { background-color: var(--function-bg); }
+        .keypad button.function:hover { background-color: var(--function-hover-bg); }
+        .output-area { margin-top: 1.5em; text-align: center; }
+        .result { padding: 1em; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 1.2em; }
         .error { margin-top: 1.5em; padding: 1em; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; border-radius: 4px; text-align: center; }
+        .history { max-width: 300px; padding: 1em; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none; }
+        .history h3 { margin-top: 0; }
+        .history ul { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
+        .history li { padding: 0.2em 0; border-bottom: 1px solid #eee; }
+        .controls-panel { position: absolute; top: 0; right: 0; display: flex; flex-direction: column; gap: 10px; }
+        .controls-panel button, .controls-panel a { padding: 10px 15px; font-size: 0.9em; cursor: pointer; color: white; border: none; border-radius: 4px; text-decoration: none; text-align: center; }
+        .controls-panel .toggle-btn { background-color: var(--toggle-btn-bg); }
+        .controls-panel .toggle-btn:hover { background-color: var(--toggle-btn-hover-bg); }
+        .controls-panel .clear-btn { background-color: var(--clear-btn-bg); }
+        .controls-panel .clear-btn:hover { background-color: var(--clear-btn-hover-bg); }
+
+        .settings-panel { display: none; padding: 1em; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; margin-top: 1em; }
+        .settings-panel h3 { margin-top: 0; }
+        .color-picker { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5em; }
+        .color-picker input[type="color"] { border: none; background: none; width: 40px; height: 30px; }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <h1>{{ title }}</h1>
+   <div class="main-wrapper">
+       <div class="general-container">
+           <h1>{{ title }}</h1>
 
-        <form method="post" id="calc-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="number1">Número 1:</label>
-                <input type="text" id="number1" name="number1" required>
+            <div class="controls-panel">
+                <button type="button" id="toggle-settings-btn" class="toggle-btn">Ajustes</button>
+                <button type="button" id="toggle-history-btn" class="toggle-btn">Historial</button>
+                <a href="{% url 'clear_history' %}" class="clear-btn">Limpiar Historial</a>
             </div>
 
-            <div class="form-group">
-                <label for="operation">Operación:</label>
-                <select id="operation" name="operation">
-                    <option value="add">Suma (+)</option>
-                    <option value="subtract">Resta (-)</option>
-                    <option value="multiply">Multiplicación (*)</option>
-                    <option value="divide">División (/)</option>
-                    <option value="square">Cuadrado (x²)</option>
-                    <option value="sqrt">Raíz Cuadrada (√)</option>
-                    <option value="log">Logaritmo Natural (ln)</option>
-                    <option value="log10">Logaritmo Vulgar (log)</option>
-                </select>
+            <div class="calculator-container">
+                <div class="calculator">
+                    <form method="post" id="calc-form">
+                        {% csrf_token %}
+                        <input type="text" id="display" name="expression" value="{% if result is not None %}{{ result|stringformat:"g" }}{% elif request.POST.expression %}{{ request.POST.expression }}{% endif %}" readonly>
+                        <div class="keypad">
+                            <!-- Fila 1 -->
+                            <button type="button" class="function" data-func="sqrt(">√</button>
+                            <button type="button" class="function" data-func="log(">ln</button>
+                            <button type="button" class="function" data-func="log10(">log</button>
+                            <button type="button" class="function" data-func="factorial(">x!</button>
+                            <!-- Fila 2 -->
+                            <button type="button" data-value="7">7</button>
+                            <button type="button" data-value="8">8</button>
+                            <button type="button" data-value="9">9</button>
+                            <button type="button" class="operator" data-value="/">/</button>
+                            <!-- Fila 3 -->
+                            <button type="button" data-value="4">4</button>
+                            <button type="button" data-value="5">5</button>
+                            <button type="button" data-value="6">6</button>
+                            <button type="button" class="operator" data-value="*">*</button>
+                            <!-- Fila 4 -->
+                            <button type="button" data-value="1">1</button>
+                            <button type="button" data-value="2">2</button>
+                            <button type="button" data-value="3">3</button>
+                            <button type="button" class="operator" data-value="-">-</button>
+                            <!-- Fila 5 -->
+                            <button type="button" data-value="0">0</button>
+                            <button type="button" data-value=".">.</button>
+                            <button type="button" id="clear-btn" class="operator">C</button>
+                            <button type="button" class="operator" data-value="+">+</button>
+                            <!-- Fila 6 -->
+                            <button type="button" data-value="(">(</button>
+                            <button type="button" data-value=")">)</button>
+                            <button type="submit" class="equal">=</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="history" id="history-panel">
+                    <h3>Historial</h3>
+                    <ul>
+                        {% for item in request.session.history|slice:"-10:" reversed %}
+                            <li>{{ item }}</li>
+                        {% empty %}
+                            <li>No hay historial.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
 
-            <div class="form-group" id="num2-group">
-                <label for="number2">Número 2:</label>
-                <input type="text" id="number2" name="number2">
+            <div class="settings-panel" id="settings-panel">
+                <h3>Configurar Colores</h3>
+                <div class="color-picker">
+                    <label for="calc-bg">Fondo Calculadora</label>
+                    <input type="color" id="calc-bg" data-var="--calc-bg">
+                </div>
+                <div class="color-picker">
+                    <label for="display-bg">Fondo Display</label>
+                    <input type="color" id="display-bg" data-var="--display-bg">
+                </div>
+                <div class="color-picker">
+                    <label for="key-bg">Botones Numéricos</label>
+                    <input type="color" id="key-bg" data-var="--key-bg">
+                </div>
+                <div class="color-picker">
+                    <label for="operator-bg">Botones Operador</label>
+                    <input type="color" id="operator-bg" data-var="--operator-bg">
+                </div>
+                <div class="color-picker">
+                    <label for="equal-bg">Botón Igual</label>
+                    <input type="color" id="equal-bg" data-var="--equal-bg">
+                </div>
+                 <button type="button" id="reset-colors-btn" style="margin-top: 1em;">Restaurar Colores</button>
             </div>
 
-            <button type="submit">Calcular</button>
-        </form>
-
-        {% if result is not None %}
-            <div class="result">
-                <strong>Resultado: {{ result|floatformat:4 }}</strong>
+            <div class="output-area">
+                {% if result is not None %}
+                    <div class="result">
+                        <strong>Resultado: {{ result|floatformat:4 }}</strong>
+                    </div>
+                {% endif %}
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
             </div>
-        {% endif %}
-
-        {% if error %}
-            <div class="error">
-                {{ error }}
-            </div>
-        {% endif %}
-    </div>
+       </div> <!-- cierre de general-container -->
+   </div> <!-- cierre de main-wrapper -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const operationSelect = document.getElementById('operation');
-            const num2Group = document.getElementById('num2-group');
-            const num2Input = document.getElementById('number2');
+            // --- Selectores de Elementos ---
+            const display = document.getElementById('display');
+            const keypad = document.querySelector('.keypad');
+            const clearButton = document.getElementById('clear-btn');
+            const toggleHistoryBtn = document.getElementById('toggle-history-btn');
+            const historyPanel = document.getElementById('history-panel');
+            const toggleSettingsBtn = document.getElementById('toggle-settings-btn');
+            const settingsPanel = document.getElementById('settings-panel');
+            const colorPickers = document.querySelectorAll('.color-picker input[type="color"]');
+            const resetColorsBtn = document.getElementById('reset-colors-btn');
 
-            function toggleNum2() {
-                const selectedOp = operationSelect.value;
-                const unaryOps = ['square', 'sqrt', 'log', 'log10'];
-                if (unaryOps.includes(selectedOp)) {
-                    num2Group.style.display = 'none';
-                    num2Input.required = false;
-                } else {
-                    num2Group.style.display = 'block';
-                    num2Input.required = true;
+            // --- Lógica de la Calculadora ---
+            keypad.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON' && e.target.type === 'button') {
+                    const value = e.target.dataset.value;
+                    const func = e.target.dataset.func;
+
+                    if (value) {
+                        display.value += value;
+                    } else if (func) {
+                        display.value += func;
+                    }
                 }
-            }
+            });
 
-            operationSelect.addEventListener('change', toggleNum2);
-            toggleNum2(); // Llama a la función al cargar la página
+            clearButton.addEventListener('click', function() {
+                display.value = '';
+            });
+
+            toggleHistoryBtn.addEventListener('click', function() {
+                const isHidden = historyPanel.style.display === 'none' || historyPanel.style.display === '';
+                if (isHidden) {
+                    historyPanel.style.display = 'block';
+                    toggleHistoryBtn.textContent = 'Ocultar Historial';
+                } else {
+                    historyPanel.style.display = 'none';
+                    toggleHistoryBtn.textContent = 'Mostrar Historial';
+                }
+            });
         });
     </script>
-
+  </div> <!-- cierre de general-container -->
 </body>
 </html>

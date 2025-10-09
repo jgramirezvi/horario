@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from math import log, sqrt, log10
+from django.shortcuts import render, redirect
+from math import log, sqrt, log10, factorial
+import re
 
 # Imports para la generación de PDF
 from django.http import HttpResponse
@@ -11,57 +12,59 @@ import io
 def _get_log_data(limit=10):
     """Función auxiliar para generar los datos de la tabla de logaritmos."""
     results = []
-    for i in range(limit + 1):
-        if i > 0:
-            log_value = log(i)
-            results.append({'number': i, 'log': f"{log_value:.4f}"})
+    for number in range(limit + 1):
+        if number > 0:
+            log_value = log(number)
+            results.append({'number': number, 'log': f"{log_value:.4f}"})
         else:
             # El logaritmo de 0 es indefinido (tiende a -infinito)
-            results.append({'number': i, 'log': "-inf"})
+            results.append({'number': number, 'log': "-inf"})
     return results
 
 def calculator_view(request):
-    context = {'title': 'Calculadora'}
+    context = {'title': 'Calculadora básica.'}
     
+    # El historial se mantiene entre peticiones usando la sesión de Django
+    if 'history' not in request.session:
+        request.session['history'] = []
+
     if request.method == 'POST':
+        expression = request.POST.get('expression', '')
         try:
-            num1 = float(request.POST.get('number1'))
-            num2_str = request.POST.get('number2')
-            operation = request.POST.get('operation')
+            # ¡ADVERTENCIA DE SEGURIDAD!
+            # eval() puede ser peligroso si se expone a entradas no controladas.
+            # Aquí, lo limitamos a un conjunto de caracteres seguros para una calculadora.
+            if not re.match(r'^[0-9+\-*/.()\s,sqrtlog10logfactorial]+$', expression):
+                raise ValueError("Caracteres inválidos en la expresión")
 
-            result = None
+            # Hacemos que las funciones matemáticas estén disponibles para eval()
+            def safe_div(x, y):
+                if y == 0:
+                    raise ZeroDivisionError("División por cero no permitida")
+                return x / y
+
+            safe_dict = {
+                'sqrt': sqrt, 'log': log, 'log10': log10, 'factorial': factorial,
+                'div': safe_div,  # Puedes usar div(x, y) en la expresión
+                # Puedes añadir más funciones seguras aquí
+            }
+            result = eval(expression, {"__builtins__": None}, safe_dict)
+            context['result'] = result
             
-            # Definimos las operaciones en un diccionario para un código más limpio
-            binary_operations = {
-                'add': lambda a, b: a + b,
-                'subtract': lambda a, b: a - b,
-                'multiply': lambda a, b: a * b,
-                'divide': lambda a, b: a / b if b != 0 else "Error: No se puede dividir por cero."
-            }
-            unary_operations = {
-                'square': lambda a: a ** 2,
-                'sqrt': lambda a: sqrt(a) if a >= 0 else "Error: No se puede calcular la raíz cuadrada de un número negativo.",
-                'log': lambda a: log(a) if a > 0 else "Error: El logaritmo natural solo está definido para números positivos.",
-                'log10': lambda a: log10(a) if a > 0 else "Error: El logaritmo vulgar solo está definido para números positivos."
-            }
+            # Añadir al historial
+            request.session['history'].append(f"{expression} = {result}")
+            request.session.modified = True
 
-            if operation in binary_operations:
-                num2 = float(num2_str)
-                result = binary_operations[operation](num1, num2)
-            elif operation in unary_operations:
-                result = unary_operations[operation](num1)
-
-            # Manejamos los errores que devuelven las funciones lambda
-            if isinstance(result, str):
-                context['error'] = result
-                context['result'] = None
-            else:
-                context['result'] = result
-
-        except (ValueError, TypeError):
-            context['error'] = "Error: Por favor, introduce números válidos."
+        except Exception as e:
+            context['error'] = f"Error: {e}"
 
     return render(request, 'calculator/calculator.html', context)
+
+def clear_history(request):
+    """Limpia el historial de la sesión."""
+    if 'history' in request.session:
+        request.session['history'] = []
+    return redirect('calculator')
     
 def show_log_table(request):
     context = {
