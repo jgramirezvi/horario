@@ -1,0 +1,17 @@
+server {
+    listen 80;
+    server_name tu_dominio.com www.tu_dominio.com; # Reemplaza con tu dominio
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    # Servir archivos estáticos directamente
+    location /static/ {
+        root /ruta/a/tu/proyecto/horario; # Reemplaza con la ruta real
+    }
+
+    # Pasar todas las demás peticiones a Gunicorn
+    location / {
+        include proxy_params;
+        proxy_pass http://127.0.0.1:8000;
+    }
+}

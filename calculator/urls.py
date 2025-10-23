@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     # La página de inicio ahora es la calculadora
     path('', views.calculator_view, name='calculator'),
+    # La página de la calculadora
+    path('calculadora/', views.calculator_view, name='calculator'),
     # Mantenemos la tabla de logaritmos en una ruta separada
     path('log-table/', views.show_log_table, name='log_table'),
     # Nueva ruta para generar el PDF de la tabla de logaritmos

@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from math import log, sqrt, log10, factorial
-import re
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '2Einbildungskraft6*')
+from asteval import Interpreter
 
 # Imports para la generación de PDF
 from django.http import HttpResponse
@@ -31,26 +33,19 @@ def calculator_view(request):
     if request.method == 'POST':
         expression = request.POST.get('expression', '')
         try:
-            # ¡ADVERTENCIA DE SEGURIDAD!
-            # eval() puede ser peligroso si se expone a entradas no controladas.
-            # Aquí, lo limitamos a un conjunto de caracteres seguros para una calculadora.
-            if not re.match(r'^[0-9+\-*/.()\s,sqrtlog10logfactorial]+$', expression):
-                raise ValueError("Caracteres inválidos en la expresión")
+            # Usamos asteval para una evaluación segura de la expresión matemática.
+            # Es mucho más seguro que eval().
+            aeval = Interpreter()
 
-            # Hacemos que las funciones matemáticas estén disponibles para eval()
-            def safe_div(x, y):
-                if y == 0:
-                    raise ZeroDivisionError("División por cero no permitida")
-                return x / y
-
-            safe_dict = {
-                'sqrt': sqrt, 'log': log, 'log10': log10, 'factorial': factorial,
-                'div': safe_div,  # Puedes usar div(x, y) en la expresión
-                # Puedes añadir más funciones seguras aquí
+            # Eliminamos las funciones por defecto que no queremos (por seguridad)
+            # y añadimos las nuestras.
+            aeval.symtable = {
+                'sqrt': sqrt, 'log': log, 'log10': log10, 'factorial': factorial
             }
-            result = eval(expression, {"__builtins__": None}, safe_dict)
+
+            result = aeval.eval(expression)
             context['result'] = result
-            
+
             # Añadir al historial
             request.session['history'].append(f"{expression} = {result}")
             request.session.modified = True
