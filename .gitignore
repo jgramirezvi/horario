@@ -1,0 +1,9 @@
+# Ignorar el archivo de variables de entorno
+.env
+
+# Otros archivos que podrías querer ignorar
+/venv/
+/staticfiles/
+__pycache__/
+*.pyc
+db.sqlite3
