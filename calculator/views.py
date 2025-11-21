@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
 from math import log, sqrt, log10, factorial
-import os
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '2Einbildungskraft6*')
 from asteval import Interpreter
 
 # Imports para la generación de PDF
@@ -10,6 +8,10 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 import io
+
+def home_view(request):
+    """Vista para la página de inicio del proyecto."""
+    return render(request, 'calculator/home.html')
 
 def _get_log_data(limit=10):
     """Función auxiliar para generar los datos de la tabla de logaritmos."""
