@@ -40,8 +40,12 @@
             box-shadow: 0 3px rgba(0,0,0,0.4);
             transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s;
         }
-        .keypad button:active { transform: scale(0.97) translateY(2px); box-shadow: 0 1px rgba(0,0,0,0.4); }
-        .keypad button:hover { background-color: var(--key-hover-bg); }
+        .keypad button:active { transform: scale(0.8) translateY(2px); box-shadow: 0 1px rgba(0,0,0,0.4); }
+        .keypad button:hover {
+            background-color: var(--key-hover-bg);
+            transform: scale(1.3);
+        }
+    
         .keypad button.operator { background-color: var(--operator-bg); }
         .keypad button.operator:hover { background-color: var(--operator-hover-bg); }
         .keypad button.equal { background-color: var(--equal-bg); grid-column: span 2; }

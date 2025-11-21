@@ -2,14 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # La página de inicio ahora es la calculadora
-    path('', views.calculator_view, name='calculator'),
-    # La página de la calculadora
-    path('calculadora/', views.calculator_view, name='calculator'),
-    # Mantenemos la tabla de logaritmos en una ruta separada
-    path('log-table/', views.show_log_table, name='log_table'),
-    # Nueva ruta para generar el PDF de la tabla de logaritmos
-    path('log-table/pdf/', views.generate_log_pdf, name='log_table_pdf'),
-    # Nueva ruta para limpiar el historial
+    path('', views.home_view, name='home'),
+    path('calculator/', views.calculator_view, name='calculator'),
     path('clear-history/', views.clear_history, name='clear_history'),
+    path('log-table/', views.show_log_table, name='log_table'),
+    path('log-pdf/', views.generate_log_pdf, name='log_pdf'),
 ]
