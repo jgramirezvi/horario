@@ -26,7 +26,7 @@ def _get_log_data(limit=10):
     return results
 
 def calculator_view(request):
-    context = {'title': 'Calculadora básica.'}
+    context = {'title': 'Calculadora'}
     
     # El historial se mantiene entre peticiones usando la sesión de Django
     if 'history' not in request.session:
