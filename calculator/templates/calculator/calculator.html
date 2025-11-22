@@ -17,8 +17,8 @@
             --equal-hover-bg: #27ae60;
             --function-bg: #777;
             --function-hover-bg: #888;
-            --clear-btn-bg: #dc3545;
-            --clear-btn-hover-bg: #c82333;
+            --clear-btn-bg: #ff9800; /* Naranja para el botón de limpiar */
+            --clear-btn-hover-bg: #f57c00;
             --toggle-btn-bg: #6c757d;
             --toggle-btn-hover-bg: #5a6268;
         }
@@ -56,6 +56,14 @@
         .keypad button.equal:hover { background-color: var(--equal-hover-bg); }
         .keypad button.function { background-color: var(--function-bg); }
         .keypad button.function:hover { background-color: var(--function-hover-bg); }
+        
+        .keypad button#clear-btn {
+            background-color: var(--clear-btn-bg);
+        }
+        .keypad button#clear-btn:hover {
+            background-color: var(--clear-btn-hover-bg);
+        }
+
         .output-area { margin-top: 1.5em; text-align: center; }
         .result { padding: 1em; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 1.2em; }
         .error { margin-top: 1.5em; padding: 1em; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; border-radius: 4px; text-align: center; }
@@ -116,7 +124,7 @@
                                     <!-- Fila 5 -->
                                     <button type="button" data-value="0">0</button>
                                     <button type="button" data-value=".">.</button>
-                                    <button type="button" id="clear-btn" class="operator">C</button>
+                                    <button type="button" id="clear-btn" class="clear-btn">C</button>
                                     <button type="button" class="operator" data-value="+">+</button>
                                     <!-- Fila 6 -->
                                     <button type="button" data-value="(">(</button>
@@ -165,6 +173,10 @@
                         <div class="color-picker">
                             <label for="equal-bg">Botón Igual</label>
                             <input type="color" id="equal-bg" data-var="--equal-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="clear-btn-bg">Botón Limpiar</label>
+                            <input type="color" id="clear-btn-bg" data-var="--clear-btn-bg">
                         </div>
                          <button type="button" id="reset-colors-btn" style="margin-top: 1em;">Restaurar Colores</button>
                     </div>
