@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Horarios{% endblock %}</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            margin: 0; 
+            background-color: #f4f4f9; 
+        }
+        .header {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            box-sizing: border-box;
+        }
+        .header-title {
+            color: darkblue;
+            margin: 0;
+            transition: color 0.3s;
+            font-size: 2em;
+        }
+        .header-title:hover {
+            color: steelblue;
+        }
+        {% block style %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Horarios</h1>
+    </div>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -6,8 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Inicio</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
-        .container { text-align: center; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f4f4f9; }
+        .header {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            box-sizing: border-box;
+        }
+        .header-title {
+            color: darkblue;
+            margin: 0;
+            transition: color 0.3s;
+            font-size: 2em; /* Tamaño de fuente más grande para el título */
+        }
+        .header-title:hover {
+            color: steelblue;
+        }
+        .container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         h1 { color: #333; }
         .btn {
             background-color: #007bff;
@@ -24,6 +41,9 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1 class="header-title">Horarios</h1>
+    </div>
     <div class="container">
         <h1>Bienvenido al Proyecto</h1>
         <a href="{% url 'calculator' %}" class="btn">Ir a la Calculadora</a>

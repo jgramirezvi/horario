@@ -23,8 +23,25 @@
             --toggle-btn-hover-bg: #5a6268;
         }
 
-        body { font-family: sans-serif; margin: 2em; background-color: #999999; }
-        .main-wrapper { position: relative; }
+        body { font-family: sans-serif; margin: 0; background-color: #f4f4f9; }
+        .header {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            box-sizing: border-box;
+        }
+        .header-title {
+            color: darkblue;
+            margin: 0;
+            transition: color 0.3s;
+            font-size: 2em;
+        }
+        .header-title:hover {
+            color: steelblue;
+        }
+        .main-wrapper { position: relative; padding: 2em 0; }
         .general-container { width: 95%; max-width: 1200px; margin: 0 auto; background-color: #ffffff; padding: 1em; border-radius: 8px; }
         .app-layout { display: flex; gap: 2em; }
         .calculator-wrapper { flex: 1; }
@@ -89,9 +106,12 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1 class="header-title">Horarios</h1>
+    </div>
    <div class="main-wrapper">
        <div class="general-container">
-           <h1>{{ title }}</h1>
+            <h2 style="text-align: center; color: #333;">Calculadora</h2>
             
             <div class="app-layout">
                 <div class="calculator-wrapper">
@@ -148,6 +168,7 @@
 
                 <div class="sidebar">
                     <div class="controls-panel">
+                        <a href="{% url 'home' %}" class="toggle-btn">Home</a>
                         <button type="button" id="toggle-settings-btn" class="toggle-btn">Ajustes</button>
                         <button type="button" id="toggle-history-btn" class="toggle-btn">Historial</button>
                     </div>
