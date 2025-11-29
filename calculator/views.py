@@ -9,6 +9,10 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 import io
 
+def portal_view(request):
+    """Vista para la página del portal principal."""
+    return render(request, 'calculator/portal.html')
+
 def home_view(request):
     """Vista para la página de inicio del proyecto."""
     return render(request, 'calculator/home.html')
