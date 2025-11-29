@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title> 
+    <style>
+        :root {
+            --calc-bg: #333;
+            --display-bg: #dcdcdc;
+            --display-text: #333;
+            --key-bg: #555;
+            --key-hover-bg: #666;
+            --operator-bg: #f39c12;
+            --operator-hover-bg: #e67e22;
+            --equal-bg: #2ecc71;
+            --equal-hover-bg: #27ae60;
+            --function-bg: #777;
+            --function-hover-bg: #888;
+            --clear-btn-bg: #ff9800; /* Naranja para el botón de limpiar */
+            --clear-btn-hover-bg: #f57c00;
+            --toggle-btn-bg: #6c757d;
+            --toggle-btn-hover-bg: #5a6268;
+        }
+
+        body { font-family: sans-serif; margin: 0; background-color: #f4f4f9; }
+        .header {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            box-sizing: border-box;
+        }
+        .header-title {
+            color: darkblue;
+            margin: 0;
+            transition: color 0.3s;
+            font-size: 2em;
+        }
+        .header-title:hover {
+            color: steelblue;
+        }
+        .main-wrapper { position: relative; padding: 2em 0; }
+        .general-container { width: 95%; max-width: 1200px; margin: 0 auto; background-color: #ffffff; padding: 1em; border-radius: 8px; }
+        .app-layout { display: flex; gap: 2em; }
+        .calculator-wrapper { flex: 1; }
+        .calculator-container { display: flex; justify-content: center; }
+        .calculator { max-width: 320px; margin: 2em auto; padding: 1.5em; border: 1px solid #ccc; border-radius: 8px; background-color: var(--calc-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        h1 { text-align: center; color: #333; }
+        #display { width: 100%; padding: 15px; margin-bottom: 1em; font-size: 2em; text-align: right; background-color: var(--display-bg); border: 2px solid #444; border-radius: 4px; box-sizing: border-box; color: var(--display-text); }
+        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .keypad button {
+            padding: 20px; font-size: 1.2em; border: none; border-radius: 4px; cursor: pointer;
+            background-color: var(--key-bg); color: white;
+            /* Añadimos sombra y transición para el efecto 3D */
+            box-shadow: 0 3px rgba(0,0,0,0.4);
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s;
+        }
+        .keypad button:active { transform: scale(0.3) translateY(2px); box-shadow: 0 1px rgba(0,0,0,0.4); }
+        .keypad button:focus { transform: scale(1); outline: none; }
+        .keypad button:hover {
+            background-color: var(--key-hover-bg);
+            transform: scale(1.1);
+        }
+        .keypad button.button-pressed {
+            transform: scale(0.5);
+        }
+    
+        .keypad button.operator { background-color: var(--operator-bg); }
+        .keypad button.operator:hover { background-color: var(--operator-hover-bg); }
+        .keypad button.equal { background-color: var(--equal-bg); grid-column: span 2; }
+        .keypad button.equal:hover { background-color: var(--equal-hover-bg); }
+        .keypad button.function { background-color: var(--function-bg); }
+        .keypad button.function:hover { background-color: var(--function-hover-bg); }
+        
+        .keypad button#clear-btn {
+            background-color: var(--clear-btn-bg);
+        }
+        .keypad button#clear-btn:hover {
+            background-color: var(--clear-btn-hover-bg);
+        }
+
+        .output-area { margin-top: 1.5em; text-align: center; }
+        .result { padding: 1em; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 1.2em; }
+        .error { margin-top: 1.5em; padding: 1em; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; border-radius: 4px; text-align: center; }
+        .sidebar { flex-basis: 20%; min-width: 250px; }
+        .history { padding: 1em; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none; margin-top: 1em; }
+        .history h3 { margin-top: 0; }
+        .history ul { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
+        .history li { padding: 0.2em 0; border-bottom: 1px solid #eee; }
+        .history .clear-btn { display: block; margin-top: 1em; } /* Estilo para el botón dentro del historial */
+        .controls-panel { display: flex; flex-direction: column; gap: 10px; }
+        .controls-panel button, .controls-panel a { padding: 10px 15px; font-size: 0.9em; cursor: pointer; color: white; border: none; border-radius: 4px; text-decoration: none; text-align: center; }
+        .controls-panel .toggle-btn { background-color: var(--toggle-btn-bg); }
+        .controls-panel .toggle-btn:hover { background-color: var(--toggle-btn-hover-bg); }
+        /* Estilos generales para el botón de limpiar */
+        .clear-btn { background-color: var(--clear-btn-bg); padding: 10px 15px; font-size: 0.9em; cursor: pointer; color: white; border: none; border-radius: 4px; text-decoration: none; text-align: center; }
+        .clear-btn:hover { background-color: var(--clear-btn-hover-bg); }
+
+
+        .settings-panel { display: none; padding: 1em; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; margin-top: 1em; }
+        .settings-panel h3 { margin-top: 0; }
+        .color-picker { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5em; }
+        .color-picker input[type="color"] { border: none; background: none; width: 40px; height: 30px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Horarios</h1>
+    </div>
+   <div class="main-wrapper">
+       <div class="general-container">
+            <h2 style="text-align: center; color: #333;">Calculadora</h2>
+            
+            <div class="app-layout">
+                <div class="calculator-wrapper">
+                    <div class="calculator-container">
+                        <div class="calculator">
+                            <form method="post" id="calc-form">
+                                {% csrf_token %}
+                                <input type="text" id="display" name="expression" value="{% if result is not None %}{{ result|stringformat:"g" }}{% elif request.POST.expression %}{{ request.POST.expression }}{% endif %}" readonly>
+                                <div class="keypad">
+                                    <!-- Fila 1 -->
+                                    <button type="button" class="function" data-func="sqrt(">√</button>
+                                    <button type="button" class="function" data-func="log(">ln</button>
+                                    <button type="button" class="function" data-func="log10(">log</button>
+                                    <button type="button" class="function" data-func="factorial(">x!</button>
+                                    <!-- Fila 2 -->
+                                    <button type="button" data-value="7">7</button>
+                                    <button type="button" data-value="8">8</button>
+                                    <button type="button" data-value="9">9</button>
+                                    <button type="button" class="operator" data-value="/">/</button>
+                                    <!-- Fila 3 -->
+                                    <button type="button" data-value="4">4</button>
+                                    <button type="button" data-value="5">5</button>
+                                    <button type="button" data-value="6">6</button>
+                                    <button type="button" class="operator" data-value="*">*</button>
+                                    <!-- Fila 4 -->
+                                    <button type="button" data-value="1">1</button>
+                                    <button type="button" data-value="2">2</button>
+                                    <button type="button" data-value="3">3</button>
+                                    <button type="button" class="operator" data-value="-">-</button>
+                                    <!-- Fila 5 -->
+                                    <button type="button" data-value="0">0</button>
+                                    <button type="button" data-value=".">.</button>
+                                    <button type="button" id="clear-btn" class="clear-btn">C</button>
+                                    <button type="button" class="operator" data-value="+">+</button>
+                                    <!-- Fila 6 -->
+                                    <button type="button" data-value="(">(</button>
+                                    <button type="button" data-value=")">)</button>
+                                    <button type="submit" class="equal">=</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="output-area">
+                        {% if result is not None %}
+                            <div class="result">
+                                <strong>Resultado: {{ result|floatformat:4 }}</strong>
+                            </div>
+                        {% endif %}
+                        {% if error %}
+                            <div class="error">{{ error }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="controls-panel">
+                        <a href="{% url 'home' %}" class="toggle-btn">Home</a>
+                        <button type="button" id="toggle-settings-btn" class="toggle-btn">Ajustes</button>
+                        <button type="button" id="toggle-history-btn" class="toggle-btn">Historial</button>
+                    </div>
+
+                    <div class="settings-panel" id="settings-panel">
+                        <h3>Configurar Colores</h3>
+                        <div class="color-picker">
+                            <label for="calc-bg">Fondo Calculadora</label>
+                            <input type="color" id="calc-bg" data-var="--calc-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="display-bg">Fondo Display</label>
+                            <input type="color" id="display-bg" data-var="--display-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="key-bg">Botones Numéricos</label>
+                            <input type="color" id="key-bg" data-var="--key-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="operator-bg">Botones Operador</label>
+                            <input type="color" id="operator-bg" data-var="--operator-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="equal-bg">Botón Igual</label>
+                            <input type="color" id="equal-bg" data-var="--equal-bg">
+                        </div>
+                        <div class="color-picker">
+                            <label for="clear-btn-bg">Botón Limpiar</label>
+                            <input type="color" id="clear-btn-bg" data-var="--clear-btn-bg">
+                        </div>
+                         <button type="button" id="reset-colors-btn" style="margin-top: 1em;">Restaurar Colores</button>
+                    </div>
+
+                    <div class="history" id="history-panel">
+                        <h3>Historial</h3>
+                        <ul>
+                            {% for item in request.session.history|slice:"-10:" reversed %}
+                                <li>{{ item }}</li>
+                            {% empty %}
+                                <li>No hay historial.</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'clear_history' %}" class="clear-btn">Limpiar Historial</a>
+                    </div>
+                </div>
+            </div>
+       </div> <!-- cierre de general-container -->
+   </div> <!-- cierre de main-wrapper -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Selectores de Elementos ---
+            const display = document.getElementById('display');
+            const keypad = document.querySelector('.keypad');
+            const clearButton = document.getElementById('clear-btn');
+            const toggleHistoryBtn = document.getElementById('toggle-history-btn');
+            const historyPanel = document.getElementById('history-panel');
+            const toggleSettingsBtn = document.getElementById('toggle-settings-btn');
+            const settingsPanel = document.getElementById('settings-panel');
+            const colorPickers = document.querySelectorAll('.color-picker input[type="color"]');
+            const resetColorsBtn = document.getElementById('reset-colors-btn');
+
+            // --- Lógica de la Calculadora ---
+            keypad.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON' && e.target.type === 'button') {
+                    const value = e.target.dataset.value;
+                    const func = e.target.dataset.func;
+
+                    if (value) {
+                        display.value += value;
+                    } else if (func) {
+                        display.value += func;
+                    }
+                }
+            });
+
+            clearButton.addEventListener('click', function() {
+                display.value = '';
+            });
+
+            toggleHistoryBtn.addEventListener('click', function() {
+                const isHidden = historyPanel.style.display === 'none' || historyPanel.style.display === '';
+                if (isHidden) {
+                    historyPanel.style.display = 'block';
+                    toggleHistoryBtn.textContent = 'Ocultar Historial';
+                } else {
+                    historyPanel.style.display = 'none';
+                    toggleHistoryBtn.textContent = 'Mostrar Historial';
+                }
+            });
+
+            // --- Lógica de Ajustes de Color ---
+
+            // Función para aplicar un color guardado
+            const applyColor = (variable, color) => {
+                document.documentElement.style.setProperty(variable, color);
+            };
+
+            // Función para guardar el color en localStorage
+            const saveColor = (variable, color) => {
+                localStorage.setItem(variable, color);
+            };
+
+            // Cargar colores desde localStorage al iniciar
+            const loadColors = () => {
+                colorPickers.forEach(picker => {
+                    const cssVar = picker.dataset.var;
+                    const savedColor = localStorage.getItem(cssVar);
+                    if (savedColor) {
+                        picker.value = savedColor;
+                        applyColor(cssVar, savedColor);
+                    } else {
+                        // Sincronizar el picker con el valor CSS por defecto
+                        const defaultValue = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+                        picker.value = defaultValue;
+                    }
+                });
+            };
+
+            // Mostrar/Ocultar panel de ajustes
+            toggleSettingsBtn.addEventListener('click', function() {
+                const isHidden = settingsPanel.style.display === 'none' || settingsPanel.style.display === '';
+                settingsPanel.style.display = isHidden ? 'block' : 'none';
+                toggleSettingsBtn.textContent = isHidden ? 'Ocultar Ajustes' : 'Ajustes';
+            });
+
+            // Manejar cambio de color en los pickers
+            colorPickers.forEach(picker => {
+                picker.addEventListener('input', function(e) {
+                    const cssVar = e.target.dataset.var;
+                    const newColor = e.target.value;
+                    applyColor(cssVar, newColor);
+                    saveColor(cssVar, newColor);
+                });
+            });
+
+            // Restaurar colores por defecto
+            resetColorsBtn.addEventListener('click', function() {.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: transform 0.2s ease-in-out;
+}
+.btn:hover {
+    transform: scale(1.05);
+}
+{% endblock %}
+
+{% block content %}
+<nav class="main-menu">
+    <ul>
+        <li><a href="#catalogo">Catálogos</a></li>
+        <li><a href="#horarios">Horarios</a></li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Utilerías</a>
+            <div class="dropdown-content">
+                <a href="{% url 'calculator' %}">Calculadora</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="parallax"></div>
+
+<div style="height:1000px;padding:20px;">
+    <h2>Bienvenido al Portal</h2>
+    <p>Esta es la página principal del proyecto.</p>
+    <a href="{% url 'calculator' %}" class="btn">Ir a la Calculadora</a>
+</div>
+{% endblock %}
+                colorPickers.forEach(picker => {
+                    const cssVar = picker.dataset.var;
+                    localStorage.removeItem(cssVar);
+                });
+                // Recargamos la página para aplicar los estilos CSS originales.
+                // Una alternativa sería resetear las variables una por una sin recargar.
+                window.location.reload();
+            });
+
+            // Cargar los colores al iniciar la página
+            loadColors();
+        });
+    </script>
+  </div> <!-- cierre de general-container -->
+</body>
+</html>

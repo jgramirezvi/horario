@@ -3,70 +3,6 @@
 
 {% block title %}Portal Principal{% endblock %}
 
-{% block style %}
-.parallax {
-    background-image: url("https://placehold.co/1920x1080/000000/FFFFFF/png?text=Data+Connectivity");
-    min-height: 500px;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 95%;
-    margin: 0 auto;
-}
-
-.main-menu {
-    background-color: #333;
-    overflow: hidden;
-}
-
-.main-menu ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-.main-menu li a, .dropbtn {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-.main-menu li a:hover, .dropdown:hover .dropbtn {
-    background-color: #111;
-}
-
-.main-menu li.dropdown {
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1;}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-{% endblock %}
-
 {% block content %}
 <nav class="main-menu">
     <ul>
@@ -86,5 +22,6 @@
 <div style="height:1000px;padding:20px;">
     <h2>Bienvenido al Portal</h2>
     <p>Esta es la página principal del proyecto.</p>
+    <a href="{% url 'calculator' %}" class="btn">Ir a la Calculadora</a>
 </div>
 {% endblock %}
