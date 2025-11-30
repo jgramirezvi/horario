@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Portal Principal{% endblock %}
+
+{% block content %}
+<nav class="main-menu">
+    <ul>
+        <li><a href="#catalogo">Catálogos</a></li>
+        <li><a href="#horarios">Horarios</a></li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Utilerías</a>
+            <div class="dropdown-content">
+                <a href="{% url 'calculator' %}">Calculadora</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="parallax"></div>
+
+<div style="height:1000px;padding:20px;">
+    <h2>Bienvenido al Portal</h2>
+    <p>Esta es la página principal del proyecto.</p>
+    <a href="{% url 'calculator' %}" class="btn">Ir a la Calculadora</a>
+</div>
+{% endblock %}
