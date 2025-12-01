@@ -6,14 +6,10 @@
 {% block content %}
 <nav class="main-menu">
     <ul>
-        <li><a href="#catalogo">Catálogos</a></li>
-        <li><a href="#horarios">Horarios</a></li>
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">Utilerías</a>
-            <div class="dropdown-content">
-                <a href="{% url 'calculator' %}">Calculadora</a>
-            </div>
-        </li>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
+        <li><a href="{% url 'portal' %}">Portal</a></li>
+        <li><a href="{% url 'calculator' %}">Calculadora</a></li>
+        <li><a href="{% url 'log_table' %}">Tabla de Logaritmos</a></li>
     </ul>
 </nav>
 
