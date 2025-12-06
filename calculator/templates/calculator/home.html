@@ -44,6 +44,33 @@
     <div class="header">
         <h1 class="header-title">Horarios</h1>
     </div>
+    <style>
+    .main-menu {
+        background-color: blue;
+        overflow: hidden;
+    }
+    .main-menu ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    .main-menu li a {
+        display: inline-block;
+        color: yellow;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+</style>
+<nav class="main-menu">
+    <ul>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
+        <li><a href="{% url 'portal' %}">Portal</a></li>
+        <li><a href="{% url 'calculator' %}">Calculadora</a></li>
+        <li><a href="{% url 'log_table' %}">Tabla de Logaritmos</a></li>
+    </ul>
+</nav>
     <div class="container">
         <h1>Bienvenido al Proyecto</h1>
         <a href="{% url 'portal' %}" class="btn">Ir al Portal</a>

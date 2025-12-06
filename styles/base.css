@@ -9,34 +9,6 @@
     margin: 0 auto;
 }
 
-.main-menu {
-    background-color: #333;
-    overflow: hidden;
-}
-
-.main-menu ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-.main-menu li a, .dropbtn {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-.main-menu li a:hover, .dropdown:hover .dropbtn {
-    background-color: #111;
-}
-
-.main-menu li.dropdown {
-    display: inline-block;
-}
-
 .dropdown-content {
     display: none;
     position: absolute;
