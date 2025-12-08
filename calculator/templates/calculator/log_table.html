@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,6 +13,38 @@
     </style>
 </head>
 <body>
+    <style>
+    .main-menu {
+        background-color: blue;
+        overflow: hidden;
+    }
+    .main-menu ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    .main-menu li a {
+        display: inline-block;
+        color: yellow;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+    .main-menu li a:hover {
+        color: white;
+        background-color: magenta;
+        font-weight: bolder;
+    }
+</style>
+<nav class="main-menu">
+    <ul>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
+        <li><a href="{% url 'portal' %}">Portal</a></li>
+        <li><a href="{% url 'calculator' %}">Calculadora</a></li>
+        <li><a href="{% url 'log_table' %}">Tabla de Logaritmos</a></li>
+    </ul>
+</nav>
     <h1>{{ title }}</h1>
     <p>Este es el resultado de tu script <code>prueba.py</code>, ahora en una página web.</p>
     <table>
