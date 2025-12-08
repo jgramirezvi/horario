@@ -103,3 +103,18 @@ def generate_log_pdf(request):
 
     # Devuelve el PDF como una respuesta HTTP
     return HttpResponse(buf, content_type='application/pdf')
+
+def settings_view(request):
+    """Vista para la página de configuración."""
+    if request.method == 'POST':
+        colors = {
+            'bg_color': request.POST.get('bg_color', '#0000ff'),
+            'text_color': request.POST.get('text_color', '#ffff00'),
+            'hover_bg_color': request.POST.get('hover_bg_color', '#ff00ff'),
+            'hover_text_color': request.POST.get('hover_text_color', '#ffffff'),
+        }
+        request.session['menu_colors'] = colors
+        return redirect('settings')
+
+    return render(request, 'calculator/settings.html')
+

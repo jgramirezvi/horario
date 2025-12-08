@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        form { margin-top: 1em; }
+        label { display: inline-block; width: 150px; }
+        input[type="color"] { vertical-align: middle; }
+        button { margin-top: 1em; }
+    </style>
+</head>
+<body>
+    {% include 'calculator/menu.html' %}
+    <h1>Configuración</h1>
+    <h2>Colores del Menú</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="bg_color">Color de fondo:</label>
+            <input type="color" id="bg_color" name="bg_color" value="{{ menu_colors.bg_color }}">
+        </div>
+        <div style="margin-top: 1em;">
+            <label for="text_color">Color de texto:</label>
+            <input type="color" id="text_color" name="text_color" value="{{ menu_colors.text_color }}">
+        </div>
+        <div style="margin-top: 1em;">
+            <label for="hover_bg_color">Color de fondo (hover):</label>
+            <input type="color" id="hover_bg_color" name="hover_bg_color" value="{{ menu_colors.hover_bg_color }}">
+        </div>
+        <div style="margin-top: 1em;">
+            <label for="hover_text_color">Color de texto (hover):</label>
+            <input type="color" id="hover_text_color" name="hover_text_color" value="{{ menu_colors.hover_text_color }}">
+        </div>
+        <br>
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

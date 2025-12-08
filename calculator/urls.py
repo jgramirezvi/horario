@@ -8,4 +8,5 @@ urlpatterns = [
     path('clear-history/', views.clear_history, name='clear_history'),
     path('log-table/', views.show_log_table, name='log_table'),
     path('log-pdf/', views.generate_log_pdf, name='log_pdf'),
+    path('settings/', views.settings_view, name='settings'),
 ]
