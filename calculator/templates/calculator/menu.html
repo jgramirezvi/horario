@@ -50,13 +50,8 @@
 <nav class="main-menu">
     <ul>
         <li><a href="{% url 'home' %}">Inicio</a></li>
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">Portal</a>
-            <div class="dropdown-content">
-                <a href="{% url 'portal' %}">Portal Principal</a>
-                <a href="{% url 'settings' %}">Configuración</a>
-            </div>
-        </li>
+        <li><a href="{% url 'portal' %}">Portal</a></li>
+        <li><a href="{% url 'settings' %}">Configuración</a></li>
         <li><a href="{% url 'calculator' %}">Calculadora</a></li>
         <li><a href="{% url 'log_table' %}">Tabla de Logaritmos</a></li>
     </ul>

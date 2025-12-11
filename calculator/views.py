@@ -106,15 +106,35 @@ def generate_log_pdf(request):
 
 def settings_view(request):
     """Vista para la página de configuración."""
+    # Los colores por defecto, por si no están en la sesión
+    default_colors = {
+        'bg_color': '#0000ff',
+        'text_color': '#ffff00',
+        'hover_bg_color': '#ff00ff',
+        'hover_text_color': '#ffffff',
+    }
+
     if request.method == 'POST':
         colors = {
-            'bg_color': request.POST.get('bg_color', '#0000ff'),
-            'text_color': request.POST.get('text_color', '#ffff00'),
-            'hover_bg_color': request.POST.get('hover_bg_color', '#ff00ff'),
-            'hover_text_color': request.POST.get('hover_text_color', '#ffffff'),
+            'bg_color': request.POST.get('bg_color', default_colors['bg_color']),
+            'text_color': request.POST.get('text_color', default_colors['text_color']),
+            'hover_bg_color': request.POST.get('hover_bg_color', default_colors['hover_bg_color']),
+            'hover_text_color': request.POST.get('hover_text_color', default_colors['hover_text_color']),
         }
         request.session['menu_colors'] = colors
         return redirect('settings')
 
+    # Los colores para el 'GET' request se inyectan a través del context processor.
     return render(request, 'calculator/settings.html')
+
+def reset_colors(request):
+    """Resetea los colores del menú a los valores por defecto."""
+    default_colors = {
+        'bg_color': '#0000ff',
+        'text_color': '#ffff00',
+        'hover_bg_color': '#ff00ff',
+        'hover_text_color': '#ffffff',
+    }
+    request.session['menu_colors'] = default_colors
+    return redirect('settings')
 
