@@ -4,10 +4,10 @@ def menu_colors_processor(request):
     """
     # Los mismos colores por defecto que en la vista 'settings_view'
     default_colors = {
-        'bg_color': '#0000ff',
-        'text_color': '#ffff00',
-        'hover_bg_color': '#ff00ff',
-        'hover_text_color': '#ffffff',
+        'bg_color': '#f8f9fa',
+        'text_color': '#343a40',
+        'hover_bg_color': '#e9ecef',
+        'hover_text_color': '#0056b3',
     }
     
     # Obtiene los colores de la sesión o usa los de por defecto

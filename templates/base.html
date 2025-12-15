@@ -7,27 +7,11 @@
     <title>{% block title %}Horarios{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'styles/base.css' %}">
     <style>
-        body { 
-            font-family: sans-serif; 
-            margin: 0; 
-            background-color: #f4f4f9; 
-        }
-        .header {
-            width: 100%;
-            background-color: #f8f9fa;
-            padding: 10px 20px;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
-            box-sizing: border-box;
-        }
-        .header-title {
-            color: darkblue;
-            margin: 0;
-            transition: color 0.3s;
-            font-size: 2em;
-        }
-        .header-title:hover {
-            color: steelblue;
+        :root {
+            --menu-bg-color: {{ menu_colors.bg_color|default:'#f8f9fa' }};
+            --menu-text-color: {{ menu_colors.text_color|default:'#343a40' }};
+            --menu-hover-bg-color: {{ menu_colors.hover_bg_color|default:'#e9ecef' }};
+            --menu-hover-text-color: {{ menu_colors.hover_text_color|default:'#0056b3' }};
         }
     </style>
 </head>

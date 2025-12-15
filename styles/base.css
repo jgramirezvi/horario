@@ -1,3 +1,9 @@
+:root {
+    --menu-bg-color: #f8f9fa;
+    --menu-text-color: #343a40;
+    --menu-hover-bg-color: #e9ecef;
+    --menu-hover-text-color: #0056b3;
+}
 .parallax {
     background-image: url("https://placehold.co/1920x1080/000000/FFFFFF/png?text=Data+Connectivity");
     min-height: 500px;
@@ -44,3 +50,83 @@
 .btn:hover {
     transform: scale(1.05);
 }
+body { 
+    font-family: sans-serif; 
+    margin: 0; 
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.header {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    box-sizing: border-box;
+}
+.header-title {
+    color: darkblue;
+    margin: 0;
+    transition: color 0.3s;
+    font-size: 2em;
+}
+.header-title:hover {
+    color: steelblue;
+}
+form { margin-top: 1em; }
+label { display: inline-block; width: 150px; }
+input[type="color"] { vertical-align: middle; }
+button { margin-top: 1em; }
+
+.main-menu {
+    background-color: var(--menu-bg-color);
+    overflow: hidden;
+}
+.main-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+.main-menu li a, .main-menu .dropbtn {
+    display: inline-block;
+    color: var(--menu-text-color);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.main-menu li a:hover, .main-menu .dropdown:hover .dropbtn {
+    color: var(--menu-hover-text-color);
+    background-color: var(--menu-hover-bg-color);
+    font-weight: bolder;
+}
+.main-menu .dropdown {
+    position: relative;
+    display: inline-block;
+}
+.main-menu .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.main-menu .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.main-menu .dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+.main-menu .dropdown:hover .dropdown-content {
+    display: block;
+}
+.container { text-align: center; }
+h1 { color: #333; }

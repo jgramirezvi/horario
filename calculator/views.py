@@ -104,14 +104,11 @@ def generate_log_pdf(request):
     # Devuelve el PDF como una respuesta HTTP
     return HttpResponse(buf, content_type='application/pdf')
 
-def settings_view(request):
-    """Vista para la página de configuración."""
-    # Los colores por defecto, por si no están en la sesión
     default_colors = {
-        'bg_color': '#0000ff',
-        'text_color': '#ffff00',
-        'hover_bg_color': '#ff00ff',
-        'hover_text_color': '#ffffff',
+        'bg_color': '#f8f9fa',
+        'text_color': '#343a40',
+        'hover_bg_color': '#e9ecef',
+        'hover_text_color': '#0056b3',
     }
 
     if request.method == 'POST':
@@ -130,10 +127,10 @@ def settings_view(request):
 def reset_colors(request):
     """Resetea los colores del menú a los valores por defecto."""
     default_colors = {
-        'bg_color': '#0000ff',
-        'text_color': '#ffff00',
-        'hover_bg_color': '#ff00ff',
-        'hover_text_color': '#ffffff',
+        'bg_color': '#f8f9fa',
+        'text_color': '#343a40',
+        'hover_bg_color': '#e9ecef',
+        'hover_text_color': '#0056b3',
     }
     request.session['menu_colors'] = default_colors
     return redirect('settings')
